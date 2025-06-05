@@ -1,0 +1,372 @@
+1.	Project Charter
+1.1.	Problem Statement
+Medication management is a significant challenge for many elderly individuals. Factors such as age-related cognitive decline, polypharmacy (taking multiple medications), and visual or physical impairments can lead to errors in medication intake. These errors include:
+●	Missed doses: Forgetting to take medication at the scheduled time.
+●	Incorrect dosage: Taking too much or too little of a medication.
+●	Wrong medication: Taking the wrong pill or medication.
+●	Timing errors: Taking medication at the wrong time of day.
+These errors can have serious, even life-threatening, consequences, including adverse drug reactions, hospitalization, and reduced treatment effectiveness. Current solutions, such as pill organizers and alarms, often prove inadequate for individuals with more complex medication regimens or cognitive difficulties. There is a need for a more intelligent and user-friendly system that can assist elderly individuals in taking their medication timely, accurately, and safely.
+1.2.	Project Goal
+The primary goal of this project is to develop an AI-powered medication assistance system that leverages computer vision to improve medication adherence among elderly individuals. The system will aim to:
+●	Provide reliable and accurate identification of various medication forms.
+●	Support personalized medication schedules and reminders.
+●	Enhance communication and monitoring between elderly individuals and their caregivers.
+By addressing these needs, the project seeks to reduce medication errors, improve health outcomes, and promote greater independence and quality of life for elderly individuals.
+1.3.	Machine Learning Objectives
+The project will focus on the following machine learning objectives:
+1.	Medication Form Recognition: Develop a computer vision model capable of accurately identifying different forms of medication (e.g., tablets, capsules, liquids) from images captured by a standard camera. This will involve:
+○	Training a deep learning model on a diverse dataset of medication images.
+○	Optimizing the model for accuracy, speed, and robustness to variations in lighting, angle, and image quality.
+○	Evaluating the model's performance using appropriate metrics (e.g., precision, recall, F1-score).
+2.	Voice-Controlled Interaction: Integrate voice recognition and natural language processing (NLP) to enable hands-free interaction with the system. This will involve:
+○	Implementing voice commands for tasks such as logging medication intake, setting reminders, and requesting information.
+○	Ensuring the system can accurately interpret and respond to spoken queries.
+3.	Data Analysis and Reporting: Develop algorithms to analyze medication intake data and generate reports for users and caregivers. This will involve:
+○	Implementing methods to track and summarize medication adherence.
+○	Creating visualizations and dashboards to present data in a clear and understandable format.
+○	Ensuring data privacy and security in accordance with relevant regulations.
+
+1.4.	In-Scope Items
+The initial stage of the project will include the following items:
+●	Medication Form Recognition: Development of a computer vision model to identify different medication forms (tablets, capsules, and liquids).
+●	Personalized Medication Schedules: Implementation of a feature to create and manage personalized medication schedules, including dosage, frequency, and timing.
+●	Integration with Voice Assistants: Integration with a voice assistant (e.g., Amazon Alexa, Google Assistant) for voice-controlled interaction.
+●	Connectivity for Caregivers: Development of a caregiver module that allows caregivers to remotely monitor medication adherence, receive alerts for missed doses, and communicate with the user.
+●	Reporting and Analytics: Implementation of basic reporting and analytics features to track medication adherence and generate reports.
+●	User Interface Development: Design and development of user-friendly interfaces for both elderly users and caregivers.
+●	Data Acquisition and Preparation: Collection and preparation of a dataset of medication images for training the computer vision model.
+
+1.5.	Potential Extensions 
+The following items are considered out of scope but potential extensions of this project:
+●	Integration with smart pill dispensers.
+●	Offline functionality for all features.
+●	Advanced error detection (e.g., drug interaction warnings).
+●	Integration with electronic health records (EHR) systems.
+●	Development of a dedicated hardware device.
+●	Clinical trials or regulatory approvals.
+
+2.	Data Acquisition & Initial Exploration
+
+2.1.	Data Sources
+■	What data sources have been identified and accessed? (Show links, describe datasets). 
+Computer Vision Project
+■	Source: https://universe.roboflow.com/zacht/pillidentificationzt
+■	Description: Public pill detection dataset with bounding box annotations with 2850 images
+■	Format: YOLOv8-compatible (images + labels + YAML config)
+MINDCARE Computer Vision Project
+■	Source: https://universe.roboflow.com/mindcare/mindcare
+■	Description: Public datasets with 2376 images to detect pills and medicine with labels of bottom as well
+■	Format: YOLO-compatible (images + labels + YAML config)
+Medical_pills
+■	Source: https://universe.roboflow.com/newcounting-ky2ej/medical_pills
+■	Description: with 1799 images to detect pills with only 1 class drug
+■	Format: YOLO-compatible (images + labels + YAML config)
+The Drug Name Detection Dataset
+■	Source: https://www.kaggle.com/datasets/pkdarabi/the-drug-name-detection-dataset
+■	Description: The Drug Name Detection dataset contains 1,823 annotated images of pharmaceutical packaging, including bottles, blister packs, and vials. It supports the development of computer vision models for drug label analysis, aiming to enhance drug name recognition accuracy.
+■	Format: YOLO-compatible (images + labels + YAML config)
+Pharmaceutical Drugs and Vitamins Synthetic Images
+■	Source: https://www.kaggle.com/datasets/vencerlanz09/pharmaceutical-drugs-and-vitamins-synthetic-images
+■	Description: The dataset contains images of popular pharmaceutical drugs and vitamins, organized into 10 distinct classes. It is designed for image classification tasks using CNNs and transfer learning, enabling accurate identification of pill types based on visual features.
+■	Format: Mostly JPG/PNG images in folders by class
+
+2.2.	Initial Findings on Data Sources
+■	What are the initial findings from exploring the data? (e.g., data formats, key fields, potential quality issues, volume).
+After exploring the available datasets, we found that although they offer a solid foundation for pill detection and classification tasks, none of them fully meet our project objective — which is to detect uncovered pills (without packaging) in real-world conditions to assist elderly users in identifying medication labels directly from loose pills.
+Key Observations:
+●	Data Formats:
+ Most object detection datasets follow the YOLO format, which includes image files (.jpg, .png), corresponding label files (.txt) with normalized bounding boxes, and a dataset.yaml configuration file. We can using Roboflow to annotation and make custom dataset
+●	Key Fields:
+ many of the label files use generic class names like "pill" or "drug", lacking specificity needed for pill type identification.
+●	Volume & Classes:
+ The datasets vary in size, ranging from around 1,800 to 2,800 images, with class counts ranging from 1 to 10. Some are synthetic (artificially generated), which limits generalization to real-world environments.
+●	Quality Issues:
+○	Most images feature packaged pills
+○	Limited in backgrounds, lighting, and angles reduces real-world robustness.
+○	Some bounding box annotations are inaccurate or inconsistent, especially in datasets with synthetic images or only one class.
+○	Classification datasets lack bounding boxes, making them incompatible with detection workflows unless converted.
+We concluded that the existing datasets are not sufficient for our specific goal. Therefore, we will proceed with building a custom YOLO-compatible dataset specifically focused on uncovered pills. The dataset will be prepared using Roboflow, which allows us to annotate the images efficiently and export them in the YOLO format (including images, normalized bounding box labels, and a YAML configuration file).
+This custom dataset will be annotated by pill type, ensuring that each class represents a specific medication. By following the YOLO annotation requirements, we can train an object detection model that is optimized for real-world scenarios — helping elderly users recognize and identify their medications accurately, even when the pills are out of their original packaging.
+
+2.3.	Data Cleaning and Preprocessing
+■	What is the plan for data cleaning and preprocessing?
+To ensure the dataset is well-prepared for training an accurate and efficient object detection model, the following plan will be implemented:
+I am planning to use Roboflow platform for data preprocessing. The process will involve the following steps:
+Image Upload and Annotation
+■	All custom images of uncovered pills will be uploaded to Roboflow. Manual annotation will be performed directly within Roboflow, labeling each pill with its corresponding class name.
+Dataset Structuring and Splitting
+After annotation, the dataset will be organized into three subsets:
+■	Training set
+■	Validation set
+■	Test set
+Roboflow will be used to perform the automatic split (e.g., 70% training, 20% validation, 10% testing) to ensure balanced class distribution across each set.
+Preprocessing and Augmentation
+the plan for generation involves applying data augmentation techniques to expand and diversify the dataset based on existing annotated images. This will be carried out using Roboflow, where a new version of the dataset will be created with the following preprocessing steps:Image resizing to 640×640 pixels, in line with YOLOv8 model requirements.
+Data augmentation techniques such as:
+■	Random flipping
+■	Rotation
+■	Brightness/contrast adjustments
+■	Background variation (if applicable)
+■	These techniques aim to increase dataset diversity, reduce overfitting, and accelerate training convergence.
+
+3.	Proposed Technical Approach:
+3.1.	Machine Learning Model
+■	What specific ML models, algorithms, or techniques are being considered? Why?
+Machine Learning Model
+■	For this project, we are considering using the YOLOv8 (You Only Look Once, version 8) object segmentation model as machine learning approach. YOLOv8 is well-suited for detecting and localizing objects such as pills within images with reason below.
+■	High Accuracy – Capable of detecting small and visually similar pills with precision.
+■	Real-Time Performance. It ideal for practical use, especially for elderly users who need quick identification.
+■	Industry Adoption . YOLO is widely used across healthcare, retail, and manufacturing sectors, proving its reliability and versatility in real-world applications.
+■	Popular and Actively Maintained by Ultralytics, YOLOv8 benefits from a strong open-source community and regular updates.
+■	Easy Dataset Integration and compatibility with platforms like Roboflow for annotation and preprocessing.
+■	Custom Training Support and easily fine-tuned on our pill dataset, ensuring high model accuracy tailored to our needs.
+Given the need for fast, accurate, and deployable pill detection, particularly focused on identifying uncovered pills in varied environments, YOLOv8 is the most appropriate and practical choice for this project.
+
+
+3.2.	Technologies Employed
+■	For this project, we will use Python as the main programming language because it is widely used in machine learning and has many powerful libraries. The model will be built using YOLOv8, which is based on PyTorch, a popular deep learning framework known for its flexibility and strong community support. We chose YOLOv8 because it is easy to train on custom data and gives fast, accurate results.
+■	To prepare and manage the dataset, we will use Roboflow for image annotation, preprocessing, and exporting in the correct YOLO format. Libraries like OpenCV, NumPy, and Pandas will be used for image handling and data analysis.
+■	For deployment, we plan to use FastAPI to create a simple web interface where users can upload images and get pill detection results quickly. Docker will be used to package the application so it can run consistently on different machines. We may also use Google Colab for training the model with GPU support, and in the future, cloud platforms like AWS or Azure could be used for scalable deployment.
+■	These technologies are chosen because they are easy to use, well-supported, and suitable for building an accurate and efficient pill detection system.
+
+chat gpt approach :
+✅ Summary of Your Capstone App Goal:
+A cross-platform medication management app using the laptop camera (and ideally mobile too) to:
+
+Detect pills via computer vision.
+
+Match them to a scanned prescription (OCR or user input).
+
+Schedule alarms/reminders for the correct dosage.
+
+Let the user confirm by re-scanning the pill before taking it.
+
+Detect wrong pills, track logs, notify caregivers (optional).
+
+Work offline, with a simple, senior-friendly UI/UX.
+
+🧠 Let's Break This into Real Implementation Tasks
+I'll manage your:
+
+✅ Folder structure
+
+✅ HTML/JS/CSS frontend pages
+
+✅ Camera logic for pill detection
+
+✅ UI/UX layout based on psychology
+
+✅ Backend setup (Flask or FastAPI with CORS)
+
+✅ Connection between frontend/backend
+
+✅ Offline or semi-offline capability
+
+✅ Model integration placeholder
+
+🎯 Plan to Execute (Folder + Script Setup)
+Layer	What I’ll Build
+frontend/	HTML + CSS + JS pages for Home, Scan, Reminder, Result, History
+backend/	Flask or FastAPI server, CORS-enabled, with /scan, /prescription, etc.
+static/	All frontend assets (CSS, icons, JS)
+models/	Placeholder for pill-detection model, OCR logic, etc.
+memory.json	A simple JSON-based DB for storing user meds/reminders
+
+🧩 Features That Will Be Included:
+Home page: “Scan Pill” + “Set Reminder”
+
+Camera capture screen with upload fallback
+
+OCR + pill recognition logic placeholder
+
+Results page: Show pill name, dosage, match % to prescription
+
+Reminder scheduling UI
+
+Simple offline-ready mode
+
+Fonts: Large, high-contrast (ideal for seniors)
+
+One-click pill confirmation
+
+Log viewer (basic “history” screen)
+
+🚀 NEXT STEP:
+I'll now generate a complete Flask + HTML project structure with working:
+
+index.html (Home)
+
+scan.html
+
+result.html
+
+reminder.html
+
+Basic JS to toggle views / use webcam
+
+Backend API placeholders with CORS for your teammate
+
+You'll get a .zip you can unzip and run locally with:
+
+bash
+Copy
+Edit
+python app.py
+Then scan with laptop camera, route to result, etc.
+
+Perfect question, Masoud — let me give you the ideal full local folder structure for your capstone project, designed to:
+
+Keep models, frontend, and backend clearly separated
+
+Support both Flask and FastAPI (you can switch later)
+
+Work offline on any laptop (camera, model, UI)
+
+Be clean, scalable, and ready for submission or deployment
+
+✅ Full Project Structure
+pgsql
+Copy
+Edit
+Capstone_MedScan_App/
+│
+├── frontend/                     # HTML, CSS, JS files
+│   ├── index.html
+│   ├── scan.html
+│   ├── result.html
+│   ├── reminder.html
+│   └── static/
+│       ├── style.css
+│       └── script.js
+│
+├── backend_flask/               # Flask-based backend
+│   ├── app.py                   # Flask app w/ pill scan endpoint
+│   ├── requirements.txt         # Flask dependencies
+│   └── utils/
+│       ├── image_utils.py       # base64 to image conversion
+│       └── predict.py           # connects to models and predicts pill
+│
+├── backend_fastapi/             # FastAPI version (optional)
+│   ├── main.py
+│   ├── requirements.txt
+│   └── utils/
+│       ├── image_utils.py
+│       └── predict.py
+│
+├── models/                      # ML models directory
+│   ├── yolov8_model.pt          # example: YOLOv8 weights
+│   ├── ocr/                     # any OCR logic or Tesseract models
+│   └── cnn/                     # custom CNN models
+│
+├── memory/                      # Local log/reminder DBs (if needed)
+│   └── reminders.json
+│
+├── README.md                    # For team / instructor explanation
+└── launch.bat / run.sh          # Quick launcher script (optional)
+📂 Folder Breakdown
+🔹 frontend/
+Use for all pages and interaction.
+
+Can be opened directly in browser (index.html), or hosted via Flask static route.
+
+🔹 backend_flask/ or backend_fastapi/
+Pick one backend (Flask is simpler, FastAPI is more scalable).
+
+Use utils/predict.py to load model and return prediction.
+
+Add /api/scan, /api/reminder, etc. endpoints.
+
+🔹 models/
+Store your real .pt, .h5, or .tflite models here.
+
+Example:
+
+yolov8_model.pt for pill detection
+
+ocr_model.pth or Tesseract for prescription recognition
+
+🔹 memory/
+JSON-based logs of medication history, reminders, scans, etc.
+
+Easy to read/write without a full database.
+
+✅ Integration Tips
+In app.py, load model once:
+
+python
+Copy
+Edit
+from utils.predict import load_model, predict_pill
+model = load_model("models/yolov8_model.pt")
+In predict.py, handle conversion:
+
+python
+Copy
+Edit
+def predict_pill(model, image):
+    # preprocess + predict here
+    return {"pill": "Aspirin", "confidence": 0.92}
+In script.js, convert camera to base64 and call /api/scan
+
+🚀 Optional launch.bat (Windows)
+bat
+Copy
+Edit
+@echo off
+cd backend_flask
+call venv\Scripts\activate
+python app.py
+
+3.3.	System Architecture
+■	Initial thoughts on system architecture (e.g., data flow, API structure, dashboard components).
+
+4.	Project Plan & Team Roles:
+○	Detailed task breakdown for the next 3 weeks (leading to Milestone 2).
+○	Initial assignment of roles and responsibilities within the group.
+○	Identification of potential risks or roadblocks and initial mitigation ideas.
+4.1.	Roles & Responsibilities
+
+4.2.	Project Plan
+
+	Tasks (PIC)	ETC
+		
+		
+
+Risk Management
+
+	Risks	Mitigations
+		
+		
+
+
+5.	Questions & Challenges:
+○	What questions do you have? What challenges are you anticipating?
+
+	Question	Answer
+	Which one is more important in the assessment?
+1.	Technical challenges
+2.	Business viability / practical use of AI? 	
+1. Smart Fridge Meal Recommender (CV + NLP)
+Many people waste food or don’t know what meals they can make with what's available in their fridge.
+Take a photo of the inside of a fridge → use Computer Vision to identify ingredients → use NLP to recommend possible recipes and calorie counts.
+·       Reduces food waste
+·       Helps busy individuals and families cook based on available resources
+·       Can be extended for people with dietary restrictions
+2.  Medication Identifier & Reminder for Elderly (CV + Reminder System)
+Elderly people often forget to take their medication, or take the wrong one due to poor eyesight or memory.
+Image recognition is used to identify pills and their labels, and a system is used to remind the user when and how to take them (voice + visual alerts). Optional: add face detection to confirm the right user is taking it.
+●	Prevents medication errors
+●	Helps caregivers monitor
+3.  Multi-Agent AI System for Order Fulfillment (Multi-Agent + NLP + CV)
+In small businesses, managing customer orders, inventory, sales, and delivery can be disorganized, slow, or inefficient.
+Create a multi-agent system that simulates how a company processes an order:
+●	Customer Agent: Submits orders (text or form)
+●	Warehouse Agent: Checks stock availability
+●	Sales Agent: Communicates with the customer, handles payment
+●	Packing Agent: Prepares the product for delivery
+●	Delivery Agent: Arranges logistics and status updates
+ 
+ 
+ 
+
+

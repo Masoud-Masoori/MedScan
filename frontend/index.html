@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedScan - Medication Management</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MedScan</h1>
+            <p class="subtitle">Your Personal Medication Assistant</p>
+        </header>
+
+        <main>
+            <div class="action-buttons">
+                <button class="primary-btn" onclick="location.href='scan.html'">
+                    <span class="icon">📷</span>
+                    Scan Pill
+                </button>
+                <button class="primary-btn" onclick="location.href='reminder.html'">
+                    <span class="icon">⏰</span>
+                    Set Reminder
+                </button>
+                <button class="secondary-btn" onclick="location.href='history.html'">
+                    <span class="icon">📋</span>
+                    View History
+                </button>
+                <button class="secondary-btn" onclick="location.href='settings.html'">
+                    <span class="icon">⚙️</span>
+                    Settings
+                </button>
+            </div>
+        </main>
+
+        <footer>
+            <p>Need help? Press the Help button or call your caregiver.</p>
+            <button class="help-btn" onclick="showHelp()">Help</button>
+        </footer>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>

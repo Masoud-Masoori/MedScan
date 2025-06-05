@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Medication - MedScan</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MedScan</h1>
+            <p class="subtitle">Scan a pill or prescription to identify medication details</p>
+        </header>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-btn">Home</a>
+            <a href="reminder.html" class="nav-btn">Reminders</a>
+            <a href="history.html" class="nav-btn">History</a>
+        </nav>
+        <main>
+            <div class="scan-card">
+                <video id="camera-view" autoplay playsinline></video>
+                <button id="capture" class="primary-btn">📸 Capture Image</button>
+                <div id="result" class="result-container" style="display: none;"></div>
+            </div>
+        </main>
+        <footer>
+            <p>Capstone Project &copy; Seneca College</p>
+        </footer>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>

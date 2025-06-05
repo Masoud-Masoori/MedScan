@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Result - MedScan</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Medication Details</h1>
+            <p class="subtitle">Your scanned medication information</p>
+        </header>
+
+        <main>
+            <div class="result-container">
+                <div class="result-grid">
+                    <!-- Pill Image Section -->
+                    <div class="pill-image-section">
+                        <h2>Scanned Pill</h2>
+                        <div class="pill-image-container">
+                            <img id="pill-image" src="" alt="Scanned pill" class="pill-image">
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-level" style="width: 0%"></div>
+                        </div>
+                        <p class="confidence-text">Match Confidence: <span id="confidence-value">0</span>%</p>
+                    </div>
+
+                    <!-- Prescription Details Section -->
+                    <div class="prescription-details">
+                        <h2>Prescription Information</h2>
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="info-label">Medication Name:</span>
+                                <span id="medication-name" class="info-value"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Dosage:</span>
+                                <span id="dosage" class="info-value"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Frequency:</span>
+                                <span id="frequency" class="info-value"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Duration:</span>
+                                <span id="duration" class="info-value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="primary-btn" onclick="setReminder()">
+                        <span class="icon">⏰</span>
+                        Set Reminder
+                    </button>
+                    <button class="secondary-btn" onclick="location.href='scan.html'">
+                        <span class="icon">📷</span>
+                        Scan Again
+                    </button>
+                    <button class="help-btn" onclick="showHelp()">
+                        <span class="icon">❓</span>
+                        Need Help?
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Need help? Press the Help button or call your caregiver.</p>
+        </footer>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>

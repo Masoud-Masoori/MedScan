@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Reminder - MedScan</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Set Reminder</h1>
+            <p class="subtitle">Schedule your medication reminder</p>
+        </header>
+
+        <main>
+            <div class="reminder-form">
+                <form id="reminderForm" onsubmit="setReminder(event)">
+                    <div class="form-group">
+                        <label for="pill">Medication Name</label>
+                        <input type="text" id="pill" name="pill" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dosage">Dosage</label>
+                        <input type="text" id="dosage" name="dosage" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Time to Take</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Days of Week</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="days" value="monday"> Monday</label>
+                            <label><input type="checkbox" name="days" value="tuesday"> Tuesday</label>
+                            <label><input type="checkbox" name="days" value="wednesday"> Wednesday</label>
+                            <label><input type="checkbox" name="days" value="thursday"> Thursday</label>
+                            <label><input type="checkbox" name="days" value="friday"> Friday</label>
+                            <label><input type="checkbox" name="days" value="saturday"> Saturday</label>
+                            <label><input type="checkbox" name="days" value="sunday"> Sunday</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Additional Notes</label>
+                        <input type="text" id="notes" name="notes" placeholder="Optional">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="primary-btn">
+                            <span class="icon">💾</span>
+                            Save Reminder
+                        </button>
+                        <button type="button" class="secondary-btn" onclick="location.href='index.html'">
+                            <span class="icon">🏠</span>
+                            Back to Home
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <p>Need help? Press the Help button or call your caregiver.</p>
+            <button class="help-btn" onclick="showHelp()">Help</button>
+        </footer>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication History - MedScan</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Medication History</h1>
+            <p class="subtitle">Your medication tracking record</p>
+        </header>
+
+        <main>
+            <div class="history-controls">
+                <button class="secondary-btn" onclick="exportHistory()">
+                    <span class="icon">📥</span>
+                    Export History
+                </button>
+                <button class="secondary-btn" onclick="refreshHistory()">
+                    <span class="icon">🔄</span>
+                    Refresh
+                </button>
+            </div>
+
+            <div id="history-list" class="history-container">
+                <!-- History items will be loaded here -->
+                <div class="loading">Loading history...</div>
+            </div>
+        </main>
+
+        <footer>
+            <button class="secondary-btn" onclick="location.href='index.html'">
+                <span class="icon">🏠</span>
+                Back to Home
+            </button>
+            <button class="help-btn" onclick="showHelp()">Help</button>
+        </footer>
+    </div>
+    <script src="static/script.js"></script>
+    <script>
+        // Load history when page loads
+        window.addEventListener('load', loadHistory);
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                const historyList = document.getElementById('history-list');
+                
+                if (data.success && data.history.length > 0) {
+                    historyList.innerHTML = data.history.map(entry => `
+                        <div class="history-item ${entry.taken === 'Yes' ? 'taken' : 'pending'}">
+                            <div class="history-header">
+                                <h3>${entry.medication_name}</h3>
+                                <span class="history-date">${new Date(entry.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="history-details">
+                                <p><strong>Dosage:</strong> ${entry.dosage}</p>
+                                <p><strong>Frequency:</strong> ${entry.frequency}</p>
+                                <p><strong>Duration:</strong> ${entry.duration}</p>
+                                ${entry.notes ? `<p><strong>Notes:</strong> ${entry.notes}</p>` : ''}
+                                <p><strong>Status:</strong> <span class="status-badge">${entry.taken}</span></p>
+                            </div>
+                            ${entry.taken !== 'Yes' ? `
+                                <button class="primary-btn" onclick="markAsTaken('${entry.timestamp}')">
+                                    <span class="icon">✓</span>
+                                    Mark as Taken
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    historyList.innerHTML = '<p class="no-history">No medication history found.</p>';
+                }
+            } catch (err) {
+                console.error('Error loading history:', err);
+                document.getElementById('history-list').innerHTML = 
+                    '<p class="error">Error loading history. Please try again.</p>';
+            }
+        }
+
+        async function markAsTaken(timestamp) {
+            try {
+                const response = await fetch('/api/history/mark-taken', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ timestamp })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    loadHistory(); // Refresh the history
+                } else {
+                    alert('Error marking medication as taken. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error marking medication as taken:', err);
+                alert('Error marking medication as taken. Please try again.');
+            }
+        }
+
+        async function exportHistory() {
+            try {
+                const response = await fetch('/api/history/export');
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'medication_history.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (err) {
+                console.error('Error exporting history:', err);
+                alert('Error exporting history. Please try again.');
+            }
+        }
+
+        function refreshHistory() {
+            loadHistory();
+        }
+    </script>
+</body>
+</html> 
