@@ -15,7 +15,9 @@ MedScan is a local-first medication management application designed to help elde
 - 👴 Senior-friendly user interface
 - 💾 Local-first operation (no cloud dependencies)
 - 📱 Offline functionality
-- 📊 Excel-based history tracking
+- 📊 Excel-based history tracking with JSON backup
+- 📝 Comprehensive logging system
+- 🔄 Synchronized data storage
 
 ## Project Structure
 
@@ -36,14 +38,15 @@ medscan/
 │   └── utils/                 # Utility modules
 │       ├── predict.py         # Pill detection logic
 │       ├── ocr.py            # Prescription text extraction
-│       ├── history_manager.py # History tracking
+│       ├── history_manager.py # History tracking with sync
 │       └── train_yolo.py     # YOLOv8 training script
 │
 ├── models/                    # ML models
 │   └── yolov8/               # YOLOv8 models
 │
 ├── memory/                   # Local storage
-│   └── .gitkeep             # Keep directory in git
+│   ├── medication_history.xlsx  # Excel history file
+│   └── medication_history.json  # JSON backup file
 │
 └── README.md                # This file
 ```
@@ -105,6 +108,7 @@ http://localhost:5000
 - Uses YOLOv8 for accurate pill identification
 - Works with various pill shapes and colors
 - Provides confidence scores
+- Real-time detection with webcam support
 
 ### Prescription OCR
 - Extracts text from prescription images
@@ -118,8 +122,37 @@ http://localhost:5000
 
 ### History Tracking
 - Excel-based storage for medication history
-- Export functionality
+- JSON backup for data redundancy
+- Automatic synchronization between storage formats
 - Status tracking (taken/pending)
+- Export functionality
+- Comprehensive logging system for debugging
+
+### Data Synchronization
+- Automatic synchronization between Excel and JSON formats
+- Backup system to prevent data loss
+- Logging system for tracking operations
+- Error handling and recovery
+
+## Development
+
+### Logging System
+The application includes a comprehensive logging system that tracks:
+- Application startup and shutdown
+- Pill detection operations
+- History management operations
+- File synchronization events
+- Error conditions and recovery attempts
+
+Logs can be found in the application's console output and can be redirected to a file if needed.
+
+### Error Handling
+The application includes robust error handling for:
+- File operations
+- Data synchronization
+- Pill detection
+- OCR processing
+- History management
 
 ## Contributing
 
@@ -137,4 +170,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - YOLOv8 by Ultralytics
 - Tesseract OCR
-- Flask framework 
+- Flask framework
+- Python logging system 
